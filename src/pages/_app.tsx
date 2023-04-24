@@ -1,10 +1,12 @@
 import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
+import { MantineProvider } from "@mantine/core";
 
 import { api } from "~/utils/api";
 
 import "~/styles/globals.css";
+import { Notifications } from "@mantine/notifications";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -12,7 +14,17 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <Component {...pageProps} />
+      <MantineProvider
+        withGlobalStyles
+        withNormalizeCSS
+        theme={{
+          /** Put your mantine theme override here */
+          colorScheme: "light",
+        }}
+      >
+        <Notifications/>
+          <Component {...pageProps} />
+      </MantineProvider>
     </SessionProvider>
   );
 };
