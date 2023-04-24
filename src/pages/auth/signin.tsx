@@ -18,7 +18,7 @@ import type {
   GetServerSidePropsContext,
   InferGetServerSidePropsType,
 } from "next";
-import { getProviders, signIn } from "next-auth/react";
+import { GetSessionParams, getProviders, signIn } from "next-auth/react";
 import { getServerSession } from "next-auth/next";
 import authOptions from "../api/auth/[...nextauth]";
 import PageContainer from "~/components/PageContainer";
@@ -27,7 +27,9 @@ import PageTitle from "~/components/PageTitle";
 type SSP = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
+  /* eslint-disable */
   const session = await getServerSession(context.req, context.res, authOptions);
+  /* eslint-enable */
 
   // If the user is already logged in, redirect.
   // Note: Make sure not to redirect to the same page
@@ -75,7 +77,9 @@ export default function SignIn({ providers }: SSP) {
         <Group grow mb="md" mt="md">
           {Object.values(providers).map((provider) => (
             <div key={provider.name}>
+              {/* eslint-disable @typescript-eslint/no-misused-promises */}
               <Button onClick={() => signIn(provider.id)}>
+              {/* eslint-enable @typescript-eslint/no-misused-promises */}
                 Sign in with {provider.name}
               </Button>
             </div>
@@ -88,7 +92,7 @@ export default function SignIn({ providers }: SSP) {
           my="lg"
         />
 
-        <form onSubmit={form.onSubmit(() => {})}>
+        <form onSubmit={form.onSubmit(() => {/*//TODO */})}>
           <Stack>
             {type === "register" && (
               <TextInput

@@ -1,5 +1,4 @@
 import { Title } from "@mantine/core";
-import { ReactNode } from "react";
 
 
 export default function PageTitle({ children }: { children: string | number }) {
@@ -7,7 +6,7 @@ export default function PageTitle({ children }: { children: string | number }) {
     <Title
       order={2}
       size="h1"
-      sx={(theme) => ({ fontFamily: `Greycliff CF, ${theme.fontFamily}` })}
+      sx={(theme) => ({ fontFamily: `Greycliff CF, ${theme.fontFamily ?? ''}` })}
       weight={900}
       align="center"
     >
