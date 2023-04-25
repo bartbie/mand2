@@ -17,4 +17,4 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   };
 }
 
-export default () => {}
+export default () => {/* empty since this route acts as a redirect */}
