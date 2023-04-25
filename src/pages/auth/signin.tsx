@@ -89,8 +89,8 @@ export default function SignIn({ providers }: SSP) {
           Welcome to Mantine, {type} with
         </Text>
         <Group grow mb="md" mt="md" content="center">
-          {Object.values(providers).map((p) => (
-            <ProviderButton provider={p} />
+          {Object.values(providers).map((p, i) => (
+            <ProviderButton provider={p} key={i} />
           ))}
         </Group>
 
