@@ -41,6 +41,8 @@ export const authOptions: NextAuthOptions = {
     signIn: "/auth/signin",
   },
   callbacks: {
+    redirect: async ({url, baseUrl}) => {},
+
     session: ({ session, user }) => ({
       ...session,
       user: {

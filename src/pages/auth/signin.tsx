@@ -35,7 +35,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   // Note: Make sure not to redirect to the same page
   // To avoid an infinite loop!
   if (session) {
-    return { redirect: { destination: "/contact/" } };
+    return { redirect: { destination: "/" } };
   }
 
   const providers = await getProviders();
@@ -49,7 +49,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 const ProviderButton = ({ provider }: {provider: ClientSafeProvider}) => (
   <div key={provider.name}>
     {/* eslint-disable @typescript-eslint/no-misused-promises */}
-    <Button onClick={() => signIn(provider.id)}>
+    <Button onClick={() => signIn(provider.id, {callbackUrl: "/"})}>
       {/* eslint-enable @typescript-eslint/no-misused-promises */}
       {provider.name}
     </Button>

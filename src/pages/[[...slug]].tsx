@@ -12,7 +12,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   // NOTE: Make sure not to redirect to the same page to avoid an infinite loop!
   return {
     redirect: {
-      destination: session ? "/contact/": "/auth/signin",
+      destination: session ? "/private/contact": "/auth/signin",
     },
   };
 }
