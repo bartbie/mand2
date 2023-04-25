@@ -18,7 +18,7 @@ import type {
   GetServerSidePropsContext,
   InferGetServerSidePropsType,
 } from "next";
-import { GetSessionParams, getProviders, signIn } from "next-auth/react";
+import { type ClientSafeProvider, GetSessionParams, getProviders, signIn } from "next-auth/react";
 import { getServerSession } from "next-auth/next";
 import authOptions from "../api/auth/[...nextauth]";
 import PageContainer from "~/components/PageContainer";
@@ -44,6 +44,17 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     props: { providers: providers ?? [] },
   };
 }
+
+
+const ProviderButton = ({ provider }: {provider: ClientSafeProvider}) => (
+  <div key={provider.name}>
+    {/* eslint-disable @typescript-eslint/no-misused-promises */}
+    <Button onClick={() => signIn(provider.id)}>
+      {/* eslint-enable @typescript-eslint/no-misused-promises */}
+      {provider.name}
+    </Button>
+  </div>
+);
 
 export default function SignIn({ providers }: SSP) {
   const [type, toggle] = useToggle(["login", "register"]);
@@ -74,15 +85,12 @@ export default function SignIn({ providers }: SSP) {
         </Anchor>
       </Text>
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
-        <Group grow mb="md" mt="md">
-          {Object.values(providers).map((provider) => (
-            <div key={provider.name}>
-              {/* eslint-disable @typescript-eslint/no-misused-promises */}
-              <Button onClick={() => signIn(provider.id)}>
-              {/* eslint-enable @typescript-eslint/no-misused-promises */}
-                Sign in with {provider.name}
-              </Button>
-            </div>
+        <Text size="lg" weight={500}>
+          Welcome to Mantine, {type} with
+        </Text>
+        <Group grow mb="md" mt="md" content="center">
+          {Object.values(providers).map((p) => (
+            <ProviderButton provider={p} />
           ))}
         </Group>
 
@@ -92,7 +100,11 @@ export default function SignIn({ providers }: SSP) {
           my="lg"
         />
 
-        <form onSubmit={form.onSubmit(() => {/*//TODO */})}>
+        <form
+          onSubmit={form.onSubmit(() => {
+            /*//TODO */
+          })}
+        >
           <Stack>
             {type === "register" && (
               <TextInput

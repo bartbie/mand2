@@ -8,11 +8,11 @@ await import("./src/env.mjs");
 const config = {
   async redirects() {
     return [
-      {
-        source: "/",
-        destination: "/auth/signin",
-        permanent: false,
-      },
+      // {
+      //   source: "/",
+      //   destination: "/auth/signin",
+      //   permanent: false,
+      // },
     ];
   },
   reactStrictMode: true,
