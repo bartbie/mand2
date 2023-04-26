@@ -39,6 +39,7 @@ declare module "next-auth" {
 export const authOptions: NextAuthOptions = {
   pages: {
     signIn: "/auth/signin",
+    error: "/auth/error",
   },
   callbacks: {
     session: ({ session, user }) => ({

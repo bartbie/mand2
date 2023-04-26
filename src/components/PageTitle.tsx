@@ -1,7 +1,8 @@
 import { Title } from "@mantine/core";
+import { ReactElement } from "react";
 
 
-export default function PageTitle({ children }: { children: string | number }) {
+export default function PageTitle({ children }: { children?: ReactElement | string | number | string[]} ) {
   return (
     <Title
       order={2}
