@@ -1,3 +1,3 @@
-/* secure /private routes */
+/* secure /protected routes */
 export { default } from "next-auth/middleware";
-export const config = { matcher: ["/private"] }
+export const config = { matcher: ["/protected"] }

@@ -11,7 +11,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   // NOTE: Make sure not to redirect to the same page to avoid an infinite loop!
   return {
     redirect: {
-      destination: session ? "/private/contact" : "/auth/signin",
+      destination: session ? "/protected/contact" : "/auth/signin",
       pernament: false,
     },
   };
