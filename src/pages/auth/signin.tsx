@@ -44,11 +44,12 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   };
 }
 
+const logOut = (id: string) => () => signIn(id, { callbackUrl: "/" });
 
-const ProviderButton = ({ provider }: {provider: ClientSafeProvider}) => (
+const ProviderButton = ({ provider }: { provider: ClientSafeProvider }) => (
   <div key={provider.name}>
     {/* eslint-disable @typescript-eslint/no-misused-promises */}
-    <Button onClick={() => signIn(provider.id, {callbackUrl: "/"})}>
+    <Button onClick={logOut(provider.id)}>
       {/* eslint-enable @typescript-eslint/no-misused-promises */}
       {provider.name}
     </Button>
