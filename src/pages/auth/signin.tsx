@@ -19,6 +19,7 @@ import type {
   InferGetServerSidePropsType,
 } from "next";
 import { type ClientSafeProvider, getProviders, signIn } from "next-auth/react";
+import { BrandGithub } from "tabler-icons-react";
 import PageContainer from "~/components/PageContainer";
 import PageTitle from "~/components/PageTitle";
 import { getServerAuthSession } from "~/server/auth";
@@ -56,8 +57,35 @@ const ProviderButton = ({ provider }: { provider: ClientSafeProvider }) => (
   </div>
 );
 
+type Unboxed<T> = T extends (infer U)[] ? U : T;
+
+export function GithubButton({
+  provider,
+  type,
+}: Unboxed<Parameters<typeof ProviderButton>> & {
+  type: "login" | "register";
+}) {
+  return (
+    <Button
+      leftIcon={<BrandGithub size="1rem" />}
+      onClick={logOut(provider.id)}
+      sx={(theme) => ({
+        backgroundColor:
+          theme.colors.dark[theme.colorScheme === "dark" ? 9 : 6],
+        color: "#fff",
+        "&:hover": {
+          backgroundColor:
+            theme.colors.dark[theme.colorScheme === "dark" ? 9 : 6],
+        },
+      })}
+    >
+    {type} with Github
+    </Button>
+  );
+}
+
 export default function SignIn({ providers }: SSP) {
-  const [type, toggle] = useToggle(["login", "register"]);
+  const [type, toggle] = useToggle<'login' | 'register'>(["login", "register"]);
   const form = useForm({
     initialValues: {
       email: "",
@@ -75,23 +103,27 @@ export default function SignIn({ providers }: SSP) {
     },
   });
 
+  // we currently only use GH
+  const ghProvider = (providers as Record<"github", ClientSafeProvider>)[
+    "github"
+  ];
+
   return (
     <PageContainer>
-      <PageTitle> Welcome back! </PageTitle>
-      <Text color="dimmed" size="sm" align="center" mt={5}>
+      <PageTitle> Welcome to Mand2! </PageTitle>
+      {/* <Text color="dimmed" size="sm" align="center" mt={5}>
         Do not have an account yet?{" "}
         <Anchor size="sm" component="button">
           Create account
         </Anchor>
-      </Text>
+      </Text> */}
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
-        <Text size="lg" weight={500}>
-          Welcome to Mantine, {type} with
-        </Text>
-        <Group grow mb="md" mt="md" content="center">
-          {Object.values(providers).map((p, i) => (
+        <Text align="center" size="lg" weight={500}> Use your Github account </Text>
+        <Group mb="md" mt="md" position="center">
+          <GithubButton provider={ghProvider} type={type} />
+          {/* {Object.values(providers).map((p, i) => (
             <ProviderButton provider={p} key={i} />
-          ))}
+          ))} */}
         </Group>
 
         <Divider
