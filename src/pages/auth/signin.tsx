@@ -18,17 +18,16 @@ import type {
   GetServerSidePropsContext,
   InferGetServerSidePropsType,
 } from "next";
-import { type ClientSafeProvider, GetSessionParams, getProviders, signIn } from "next-auth/react";
-import { getServerSession } from "next-auth/next";
-import authOptions from "../api/auth/[...nextauth]";
+import { type ClientSafeProvider, getProviders, signIn } from "next-auth/react";
 import PageContainer from "~/components/PageContainer";
 import PageTitle from "~/components/PageTitle";
+import { getServerAuthSession } from "~/server/auth";
 
 type SSP = InferGetServerSidePropsType<typeof getServerSideProps>;
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   /* eslint-disable */
-  const session = await getServerSession(context.req, context.res, authOptions);
+  const session = await getServerAuthSession(ctx);
   /* eslint-enable */
 
   // If the user is already logged in, redirect.
