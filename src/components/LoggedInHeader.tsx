@@ -152,7 +152,7 @@ export default function LoggedInHeader() {
               <Menu.Label>Settings</Menu.Label>
               <Menu.Item
                 onClick={() => {
-                  signOut({ callbackUrl: "/" });
+                  void signOut({ callbackUrl: "/" });
                 }}
                 icon={<IconLogout size="0.9rem" stroke={1.5} />}
               >

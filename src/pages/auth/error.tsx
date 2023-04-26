@@ -11,7 +11,7 @@ import {
 import PageTitle from "~/components/PageTitle";
 import Link from "next/link";
 
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+export function getServerSideProps(ctx: GetServerSidePropsContext) {
   return { props: { query: ctx.query } };
 }
 
@@ -38,7 +38,7 @@ const useStyles = createStyles((theme) => ({
   },
 
   title: {
-    fontFamily: `Greycliff CF, ${theme.fontFamily}`,
+    fontFamily: `Greycliff CF, ${theme.fontFamily ?? ''}`,
     textAlign: "center",
     fontWeight: 900,
     fontSize: rem(38),
@@ -61,12 +61,13 @@ export default function Error({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { classes } = useStyles();
   const error_msg =
-    ("error" in query && (query["error"] as string[]).join()) || undefined;
+    "error" in query && query["error"]  || undefined;
+  const err_formatted = error_msg && (typeof error_msg == "string"? error_msg : error_msg.join(", "));
 
   return (
     <Container className={classes.root}>
       <div className={classes.label}>404</div>
-      <PageTitle>{error_msg && `Error: ${error_msg}`}</PageTitle>
+      <PageTitle>{err_formatted && `Error: ${err_formatted}`}</PageTitle>
       <Title className={classes.title}>You have found a secret place.</Title>
       <Text
         color="dimmed"

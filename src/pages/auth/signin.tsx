@@ -45,7 +45,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   };
 }
 
-const logOut = (id: string) => () => signIn(id, { callbackUrl: "/" });
+const logOut = (id: string) => () => void signIn(id, { callbackUrl: "/" });
 
 const ProviderButton = ({ provider }: { provider: ClientSafeProvider }) => (
   <div key={provider.name}>
