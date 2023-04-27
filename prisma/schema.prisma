@@ -11,10 +11,15 @@ datasource db {
     relationMode = "prisma"
 }
 
-model Example {
-    id        String   @id @default(cuid())
+model Message {
+    // NOTE This may or may not be unnormalised, think if this needs to be related to User
+    id String @id @default(cuid())
+    name String
+    email String
+    subject String
+    message String
     createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    answered Boolean
 }
 
 // Necessary for Next auth

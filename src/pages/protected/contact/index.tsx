@@ -8,13 +8,15 @@ import {
   Notification,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { useForm } from "@mantine/form";
+import { useForm, zodResolver } from "@mantine/form";
 import PageContainer from "~/components/PageContainer";
 import PageTitle from "~/components/PageTitle";
 import { IconCheck } from "@tabler/icons-react";
 import LoggedInHeader from "~/components/LoggedInHeader";
 import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
+import { type ContactMessage, ContactMessageSchema} from "~/server/api/routers/contact";
+import { api } from "~/utils/api";
 
 const showNotif = () => {
   // TODO
@@ -25,19 +27,20 @@ const showNotif = () => {
   });
 };
 
+const sendMessage = () => {
+    // TODO
+}
+
+
 export default function Contact() {
-  const form = useForm({
+  const form = useForm<ContactMessage>({
     initialValues: {
       name: "",
       email: "",
       subject: "",
       message: "",
     },
-    validate: {
-      name: (value) => value.trim().length < 2,
-      email: (value) => !/^\S+@\S+$/.test(value),
-      subject: (value) => value.trim().length === 0,
-    },
+    validate: zodResolver(ContactMessageSchema)
   });
 
   return (
