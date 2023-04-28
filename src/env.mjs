@@ -23,6 +23,12 @@ const server = z.object({
   // DISCORD_CLIENT_SECRET: z.string(),
   GITHUB_CLIENT_ID: z.string(),
   GITHUB_CLIENT_SECRET: z.string(),
+
+  SMTP_HOST: z.string(),
+  SMTP_PORT: z.string().trim().regex(/^\d+$/),
+  SMTP_USERNAME: z.string(),
+  SMTP_PASSWORD: z.string(),
+  SMTP_SENDER: z.string().email(),
 });
 
 /**
@@ -53,6 +59,11 @@ const processEnv = {
   GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
   // DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
+  SMTP_HOST: process.env.SMTP_HOST,
+  SMTP_PORT: process.env.SMTP_PORT,
+  SMTP_USERNAME: process.env.SMTP_USERNAME,
+  SMTP_PASSWORD: process.env.SMTP_PASSWORD,
+  SMTP_SENDER: process.env.SMTP_SENDER,
 };
 
 // Don't touch the part below
