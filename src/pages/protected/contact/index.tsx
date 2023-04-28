@@ -5,7 +5,6 @@ import {
   Group,
   Button,
   LoadingOverlay,
-  Box,
   Paper,
   Container,
   Overlay,
@@ -18,7 +17,6 @@ import { IconCheck, IconX } from "@tabler/icons-react";
 import LoggedInHeader from "~/components/LoggedInHeader";
 import { api } from "~/utils/api";
 import { z } from "zod";
-import { ReactNode } from "react";
 
 // NOTE this needs to be declared either on client-side (meaning here), or possibly in separate folder.
 export const ContactMessageSchema = z.object({
@@ -31,7 +29,8 @@ export const ContactMessageSchema = z.object({
 export type ContactMessage = z.infer<typeof ContactMessageSchema>;
 
 type MessageMutation = ReturnType<typeof api.contact.postMessage.useMutation>;
-type State = "success" | "loading" | "initial";
+/**Contact state machine */
+type State = "success" | "loading" | "initial" | "error";
 
 function title(state: State) {
   switch (state) {
@@ -41,10 +40,14 @@ function title(state: State) {
       return "Verifying the message...";
     case "initial":
       return "Get in touch";
+    case "error":
+      return "Whoops!";
+    default:
+      return state satisfies never;
   }
 }
 
-function button(state: State) {
+function button(state: State): string {
   switch (state) {
     case "success":
       return "Thank you for support";
@@ -52,29 +55,32 @@ function button(state: State) {
       return "loading...";
     case "initial":
       return "Send message";
+    case "error":
+      return "Try again!";
+    default:
+      return state satisfies never;
   }
 }
 
-async function notif(mut: MessageMutation) {
-// FIXME: notifications in contact page
-  if (mut.isSuccess) {
+async function notif(state: "success" | "error") {
+  if (state == "success") {
     notifications.show({
       icon: <IconCheck />,
       message: "We will contact you shortly",
       color: "teal",
     });
+    return;
   }
-  if (mut.error) {
-    notifications.show({
-      icon: <IconX />,
-      message: "Something failed!",
-      color: "red",
-    });
-  }
+  notifications.show({
+    icon: <IconX />,
+    message: "Something failed!",
+    color: "red",
+  });
 }
 
 function ContactForm() {
   const mut = api.contact.postMessage.useMutation();
+
   const form = useForm<ContactMessage>({
     initialValues: {
       name: "",
@@ -84,25 +90,31 @@ function ContactForm() {
     },
     validate: zodResolver(ContactMessageSchema),
   });
+
+  /**current state of contact state machine */
   const state: State = mut.isLoading
     ? "loading"
-    : mut.isSuccess
+    : mut.isSuccess && mut.data.success === true
     ? "success"
+    : mut.isError
+    ? "error"
     : "initial";
-  
-  if (mut.isSuccess) console.log(mut.data)
+
   return (
     <>
       <PageTitle>{title(state)}</PageTitle>
       <form
-        onSubmit={form.onSubmit(async (msg) => {
-          mut.mutate(msg);
-          await notif(mut);
+        onSubmit={form.onSubmit((msg) => {
+          mut.mutate(msg, {
+            onSettled: (res, _error, _inp) => {
+              notif(res && res.success === true ? "success" : "error");
+            },
+          });
         })}
       >
         <Container pos="relative">
           {mut.isSuccess && <Overlay blur={2} color="#ffffff" />}
-          <LoadingOverlay visible={mut.isLoading} overlayBlur={2} />
+          <LoadingOverlay visible={state === "loading"} overlayBlur={2} />
           <SimpleGrid
             cols={2}
             mt="xl"
@@ -149,7 +161,7 @@ function ContactForm() {
           <Button
             type="submit"
             size="md"
-            disabled={mut.isLoading || mut.isSuccess}
+            disabled={state === "loading" || state === "success"}
           >
             {button(state)}
           </Button>

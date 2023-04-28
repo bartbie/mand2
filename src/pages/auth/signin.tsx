@@ -23,6 +23,9 @@ import { BrandGithub } from "tabler-icons-react";
 import PageContainer from "~/components/PageContainer";
 import PageTitle from "~/components/PageTitle";
 import { getServerAuthSession } from "~/server/auth";
+import { notifications } from "@mantine/notifications";
+import { useState } from "react";
+import { IconX } from "@tabler/icons-react";
 
 type SSP = InferGetServerSidePropsType<typeof getServerSideProps>;
 
@@ -59,7 +62,7 @@ const ProviderButton = ({ provider }: { provider: ClientSafeProvider }) => (
 
 type Unboxed<T> = T extends (infer U)[] ? U : T;
 
-export function GithubButton({
+function GithubButton({
   provider,
   type,
 }: Unboxed<Parameters<typeof ProviderButton>> & {
@@ -79,13 +82,14 @@ export function GithubButton({
         },
       })}
     >
-    {type} with Github
+      {type} with Github
     </Button>
   );
 }
 
 export default function SignIn({ providers }: SSP) {
-  const [type, toggle] = useToggle<'login' | 'register'>(["login", "register"]);
+  const [clicked, setClicked] = useState(() => false);
+  const [type, toggle] = useToggle<"login" | "register">(["login", "register"]);
   const form = useForm({
     initialValues: {
       email: "",
@@ -94,13 +98,13 @@ export default function SignIn({ providers }: SSP) {
       terms: true,
     },
 
-    validate: {
-      email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
-      password: (val) =>
-        val.length <= 6
-          ? "Password should include at least 6 characters"
-          : null,
-    },
+    // validate: {
+    //   email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
+    //   password: (val) =>
+    //     val.length <= 6
+    //       ? "Password should include at least 6 characters"
+    //       : null,
+    // },
   });
 
   // we currently only use GH
@@ -118,7 +122,9 @@ export default function SignIn({ providers }: SSP) {
         </Anchor>
       </Text> */}
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
-        <Text align="center" size="lg" weight={500}> Use your Github account </Text>
+        <Text align="center" size="lg" weight={500}>
+          Use your Github account
+        </Text>
         <Group mb="md" mt="md" position="center">
           <GithubButton provider={ghProvider} type={type} />
           {/* {Object.values(providers).map((p, i) => (
@@ -134,7 +140,14 @@ export default function SignIn({ providers }: SSP) {
 
         <form
           onSubmit={form.onSubmit(() => {
-            /*//TODO */
+            setClicked(true);
+            notifications.show({
+              autoClose: false,
+              icon: <IconX />,
+              title: "Email not implemented yet, use Oauth.",
+              message: "At least notifications work!",
+              color: "red",
+            });
           })}
         >
           <Stack>
@@ -151,7 +164,7 @@ export default function SignIn({ providers }: SSP) {
             )}
 
             <TextInput
-              required
+              // required
               label="Email"
               placeholder="hello@mantine.dev"
               value={form.values.email}
@@ -163,7 +176,7 @@ export default function SignIn({ providers }: SSP) {
             />
 
             <PasswordInput
-              required
+              // required
               label="Password"
               placeholder="Your password"
               value={form.values.password}
@@ -200,7 +213,7 @@ export default function SignIn({ providers }: SSP) {
                 ? "Already have an account? Login"
                 : "Don't have an account? Register"}
             </Anchor>
-            <Button type="submit" radius="xl">
+            <Button type="submit" radius="xl" disabled={clicked}>
               {upperFirst(type)}
             </Button>
           </Group>
