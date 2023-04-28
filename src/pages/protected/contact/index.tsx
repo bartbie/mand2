@@ -62,7 +62,7 @@ function button(state: State): string {
   }
 }
 
-async function notif(state: "success" | "error") {
+function notif(state: "success" | "error") {
   if (state == "success") {
     notifications.show({
       icon: <IconCheck />,
